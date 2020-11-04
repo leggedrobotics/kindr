@@ -130,7 +130,7 @@ template<typename Left_, typename Right_>
 class ComparisonTraits<RotationBase<Left_>, RotationBase<Right_>> {
  public:
   inline static bool isEqual(const RotationBase<Left_>& left, const RotationBase<Right_>& right) {
-    return left.derived().toImplementation() == RotationBase<Left_>(right).derived().toImplementation();
+    return left.derived().toImplementation() == static_cast<Left_>(right).toImplementation();
   }
 };
 
@@ -141,7 +141,7 @@ class ComparisonTraits<RotationBase<Left_>, RotationBase<Right_>> {
 template<typename Rotation_>
 class MapTraits<RotationBase<Rotation_>> {
  public:
-  inline static Rotation_ set_exponential_map(const typename internal::get_matrix3X<Rotation_>::template Matrix3X<1>& vector) {
+  inline static Rotation_ get_exponential_map(const typename internal::get_matrix3X<Rotation_>::template Matrix3X<1>& vector) {
     typedef typename get_scalar<Rotation_>::Scalar Scalar;
     return Rotation_(RotationVector<Scalar>(vector));
   }
@@ -165,7 +165,7 @@ class BoxOperationTraits<RotationBase<Left_>, RotationBase<Right_>> {
   }
 
   inline static  Left_ box_plus(const RotationBase<Left_>& rotation, const typename internal::get_matrix3X<Left_>::template Matrix3X<1>& vector) {
-    return Left_(MapTraits<RotationBase<Left_>>::set_exponential_map(vector)*rotation.derived());
+    return Left_(MapTraits<RotationBase<Left_>>::get_exponential_map(vector)*rotation.derived());
   }
 };
 

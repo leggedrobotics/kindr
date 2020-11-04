@@ -326,6 +326,13 @@ class RotationQuaternion : public RotationBase<RotationQuaternion<PrimType_>> {
     return *this;
   }
 
+  /*! \brief Get identity rotation.
+   *  \returns identity rotation
+   */
+  static RotationQuaternion Identity() {
+    return RotationQuaternion(Implementation::Identity());
+  }
+
   /*! \brief Returns a unique quaternion rotation with w > 0.
    *  This function is used to compare different rotations.
    *  \returns copy of the quaternion rotation which is unique
@@ -433,10 +440,15 @@ class RotationQuaternion : public RotationBase<RotationQuaternion<PrimType_>> {
 
   /*! \brief Equivalence operator.
    *  This is explicitly specified, because QuaternionBase provides also an operator==.
-   *  \returns true if two rotations are similar.
+   *  \returns true if two rotations are exactly equal.
    */
   using RotationBase<RotationQuaternion<PrimType_>> ::operator==;
 
+  /*! \brief Inequivalence operator.
+   *  This is explicitly specified, because QuaternionBase provides also an operator!=.
+   *  \returns true if two rotations are not exactly equal.
+   */
+  using RotationBase<RotationQuaternion<PrimType_>> ::operator!=;
 
   /*! \brief Used for printing the object with std::cout.
    *  \returns std::stream object

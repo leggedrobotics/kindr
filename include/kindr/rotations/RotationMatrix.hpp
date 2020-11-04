@@ -224,6 +224,13 @@ class RotationMatrix : public RotationBase<RotationMatrix<PrimType_>>, private E
     return *this;
   }
 
+  /*! \brief Get identity rotation.
+   *  \returns identity rotation
+   */
+  static RotationMatrix Identity() {
+    return RotationMatrix(Base::Identity());
+  }
+
   /*! \brief Returns a unique matrix rotation.
    *  A rotation matrix is always unique.
    *  This function is used to compare different rotations.
@@ -249,9 +256,16 @@ class RotationMatrix : public RotationBase<RotationMatrix<PrimType_>>, private E
 
   /*! \brief Equivalence operator.
    *  This is explicitly specified, because Eigen::Matrix provides also an operator==.
-   *  \returns true if two rotations are similar.
+   *  \returns true if two rotations are equal.
    */
   using RotationBase<RotationMatrix<PrimType_>>::operator==; // otherwise ambiguous RotationBase and Eigen
+
+  /*! \brief Inequivalence operator.
+   *  This is explicitly specified, because Eigen::Matrix provides also an operator!=.
+   *  \returns true if two rotations are not equal.
+   */
+  using RotationBase<RotationMatrix<PrimType_>>::operator!=; // otherwise ambiguous RotationBase and Eigen
+
 
   /*! \brief Used for printing the object with std::cout.
    *  \returns std::stream object

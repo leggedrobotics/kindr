@@ -323,6 +323,20 @@ TYPED_TEST(AngleAxisSingleTest, testComparisonEqual){
   ASSERT_EQ(false, rot==this->angleAxisGeneric2);
 }
 
+// Test comparison (inequality)
+TYPED_TEST(AngleAxisSingleTest, testComparisonNotEqual){
+  typedef typename TestFixture::AngleAxis AngleAxis;
+  typedef typename TestFixture::Scalar Scalar;
+  AngleAxis rot;
+
+  // Check equality comparison
+  rot = this->angleAxisGeneric1;
+  ASSERT_EQ(false, rot!=this->angleAxisGeneric1);
+  ASSERT_EQ(false, rot!=this->angleAxisGeneric1Plus2Pi);
+  ASSERT_EQ(false, rot!=this->angleAxisGeneric1Minus2Pi);
+  ASSERT_EQ(true, rot!=this->angleAxisGeneric2);
+}
+
 // Test  getDisparityAngle
 TYPED_TEST(AngleAxisSingleTest, testGetDisparityAngle){
   typedef typename TestFixture::AngleAxis AngleAxis;
@@ -369,19 +383,13 @@ TYPED_TEST(AngleAxisSingleTest, testConcatenation){
   // Check concatenation of 4 quarters
   rotAngleAxis = this->rotAngleAxisQuarterX*this->rotAngleAxisQuarterX*this->rotAngleAxisQuarterX*this->rotAngleAxisQuarterX;
   ASSERT_NEAR(rotAngleAxis.getUnique().angle(), this->rotAngleAxisIdentity.getUnique().angle(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().x(), this->rotAngleAxisIdentity.getUnique().axis().x(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().y(), this->rotAngleAxisIdentity.getUnique().axis().y(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().z(), this->rotAngleAxisIdentity.getUnique().axis().z(),1e-6);
+  // Axis is undefined if rotation near 0 -> no test necessary
   rotAngleAxis = this->rotAngleAxisQuarterY*this->rotAngleAxisQuarterY*this->rotAngleAxisQuarterY*this->rotAngleAxisQuarterY;
   ASSERT_NEAR(rotAngleAxis.getUnique().angle(), this->rotAngleAxisIdentity.getUnique().angle(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().x(), this->rotAngleAxisIdentity.getUnique().axis().x(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().y(), this->rotAngleAxisIdentity.getUnique().axis().y(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().z(), this->rotAngleAxisIdentity.getUnique().axis().z(),1e-6);
+// Axis is undefined if rotation near 0 -> no test necessary
   rotAngleAxis = this->rotAngleAxisQuarterZ*this->rotAngleAxisQuarterZ*this->rotAngleAxisQuarterZ*this->rotAngleAxisQuarterZ;
   ASSERT_NEAR(rotAngleAxis.getUnique().angle(), this->rotAngleAxisIdentity.getUnique().angle(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().x(), this->rotAngleAxisIdentity.getUnique().axis().x(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().y(), this->rotAngleAxisIdentity.getUnique().axis().y(),1e-6);
-  ASSERT_NEAR(rotAngleAxis.getUnique().axis().z(), this->rotAngleAxisIdentity.getUnique().axis().z(),1e-6);
+// Axis is undefined if rotation near 0 -> no test necessary
 
   // Check concatenation of 3 different quarters
   rotAngleAxis = this->rotAngleAxisQuarterX.inverted()*this->rotAngleAxisQuarterY*this->rotAngleAxisQuarterX;
@@ -567,7 +575,6 @@ TYPED_TEST(AngleAxisSingleTest, testMaps){
   typedef typename TestFixture::AngleAxis AngleAxis;
   typedef typename TestFixture::Scalar Scalar;
   typedef typename TestFixture::Vector Vector;
-  AngleAxis rotAngleAxis;
   Vector testVec;
 
   testVec = this->rotAngleAxisIdentity.logarithmicMap();
@@ -576,20 +583,20 @@ TYPED_TEST(AngleAxisSingleTest, testMaps){
   ASSERT_NEAR(testVec(2), 0.0,1e-6);
 
   testVec = this->rotAngleAxis1.logarithmicMap();
-  AngleAxis rotAngleAxisExpMap = rotAngleAxis.exponentialMap(testVec);
+  AngleAxis rotAngleAxisExpMap = AngleAxis::exponentialMap(testVec);
   ASSERT_EQ(rotAngleAxisExpMap.isNear(this->rotAngleAxis1,1e-6),true);
 
   testVec = this->rotAngleAxis2.logarithmicMap();
-  rotAngleAxisExpMap =  rotAngleAxis.exponentialMap(testVec);
+  rotAngleAxisExpMap =  AngleAxis::exponentialMap(testVec);
   ASSERT_EQ(rotAngleAxisExpMap.isNear(this->rotAngleAxis2,1e-6),true);
 
   double norm = 0.1;
   testVec = this->vec/this->vec.norm()*norm;
-  rotAngleAxisExpMap = rotAngleAxis.exponentialMap(testVec);
+  rotAngleAxisExpMap = AngleAxis::exponentialMap(testVec);
   ASSERT_NEAR(rotAngleAxisExpMap.getDisparityAngle(this->rotAngleAxisIdentity),norm,1e-6);
 
   testVec.setZero();
-  rotAngleAxisExpMap = rotAngleAxis.exponentialMap(testVec);
+  rotAngleAxisExpMap = AngleAxis::exponentialMap(testVec);
   ASSERT_NEAR(rotAngleAxisExpMap.angle(), this->rotAngleAxisIdentity.angle(),1e-6);
   ASSERT_NEAR(rotAngleAxisExpMap.axis().x(), this->rotAngleAxisIdentity.axis().x(),1e-6);
   ASSERT_NEAR(rotAngleAxisExpMap.axis().y(), this->rotAngleAxisIdentity.axis().y(),1e-6);

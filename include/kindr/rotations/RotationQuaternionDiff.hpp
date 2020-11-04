@@ -100,6 +100,13 @@ class RotationQuaternionDiff : public RotationDiffBase<RotationQuaternionDiff<Pr
     : Base(real, imag)  {
   }
 
+  /*! \brief Constructor using Eigen::Quaternion<PrimType_>.
+   *  \param other   Eigen::Quaternion<PrimType_>
+   */
+  explicit RotationQuaternionDiff(const Implementation& other)
+      : Base(other.w(),other.x(),other.y(),other.z()) {
+  }
+
   /*! \brief Constructor using a time derivative with a different parameterization
    *
    * \param rotation  rotation
@@ -165,6 +172,13 @@ class RotationQuaternionDiff : public RotationDiffBase<RotationQuaternionDiff<Pr
   RotationQuaternionDiff& setZero() {
     Base::setZero();
     return *this;
+  }
+
+  /*! \brief Get zero element.
+   *  \returns zero element
+   */
+  static RotationQuaternionDiff Zero() {
+    return RotationQuaternionDiff(Base::Zero());
   }
 
   /*! \brief Used for printing the object with std::cout.

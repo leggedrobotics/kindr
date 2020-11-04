@@ -59,9 +59,11 @@ Install the library with [CMake](www.cmake.org):
 ```bash
 mkdir build
 cd build
-cmake ..
+cmake .. -DUSE_CMAKE=true
 sudo make install
 ```
+
+Note that `USE_CMAKE` defaults to `true` if catkin is not installed.
 
 Uninstall the library with:
 
@@ -125,7 +127,7 @@ make kindr_doc
 The doxygen documentation can be found here:
 
 ```
-doc/html/index.html
+build/doc/html/index.html
 ```
 
 ### Building unit tests with gtest
@@ -140,6 +142,8 @@ unzip release-1.7.0.zip
 ln -s googletest-release-1.7.0 gtest
 mkdir build
 cd build
-cmake .. -DBUILD_TEST=true
+cmake .. -DUSE_CMAKE=true -DBUILD_TEST=true
 make
 ```
+
+Note that `USE_CMAKE` defaults to `true` if catkin is not installed.

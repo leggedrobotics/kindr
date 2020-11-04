@@ -306,6 +306,20 @@ TYPED_TEST(EulerAnglesZyxSingleTest, testComparisonEqual){
   ASSERT_EQ(false, rot==this->rotEulerAnglesZyxV2);
 }
 
+/* Test comparison (inequality)
+ *
+ */
+TYPED_TEST(EulerAnglesZyxSingleTest, testComparisonNotEqual){
+  typedef typename TestFixture::EulerAnglesZyx EulerAnglesZyx;
+  typedef typename TestFixture::Scalar Scalar;
+  EulerAnglesZyx rot;
+
+  // Check equality comparison
+  rot = this->rotEulerAnglesZyxV1;
+  ASSERT_EQ(false, rot!=this->rotEulerAnglesZyxV1);
+  ASSERT_EQ(true, rot!=this->rotEulerAnglesZyxV2);
+}
+
 /* Test  getDisparityAngle
  * Assumes conversion between EulerAnglesZyx and RotationQuaternion is correct.
  */
@@ -531,7 +545,6 @@ TYPED_TEST(EulerAnglesZyxSingleTest, testMaps){
   typedef typename TestFixture::EulerAnglesZyx EulerAnglesZyx;
   typedef typename TestFixture::Scalar Scalar;
   typedef typename TestFixture::Vector Vector;
-  EulerAnglesZyx rot;
   Vector testVec;
 
   testVec = this->rotEulerAnglesZyxIdentity.logarithmicMap();
@@ -540,20 +553,20 @@ TYPED_TEST(EulerAnglesZyxSingleTest, testMaps){
   ASSERT_NEAR(testVec(2), 0.0,1e-6);
 
   testVec = this->rotEulerAnglesZyxV3.logarithmicMap();
-  EulerAnglesZyx rotExpMap = rot.exponentialMap(testVec);
+  EulerAnglesZyx rotExpMap = EulerAnglesZyx::exponentialMap(testVec);
   KINDR_ASSERT_DOUBLE_MX_EQ(this->rotEulerAnglesZyxV3.toImplementation(), rotExpMap.toImplementation(), Scalar(1e-4), "maps");
 
   testVec = this->rotEulerAnglesZyxV4.logarithmicMap();
-  rotExpMap = rot.exponentialMap(testVec);
+  rotExpMap = EulerAnglesZyx::exponentialMap(testVec);
   KINDR_ASSERT_DOUBLE_MX_EQ(this->rotEulerAnglesZyxV4.toImplementation(), rotExpMap.toImplementation(), Scalar(1e-4), "maps");
 
   double norm = 0.1;
   testVec = this->vec/this->vec.norm()*norm;
-  rotExpMap = rot.exponentialMap(testVec);
+  rotExpMap = EulerAnglesZyx::exponentialMap(testVec);
   ASSERT_NEAR(rotExpMap.getDisparityAngle(this->rotEulerAnglesZyxIdentity),norm,1e-6);
 
   testVec.setZero();
-  rotExpMap = rot.exponentialMap(testVec);
+  rotExpMap = EulerAnglesZyx::exponentialMap(testVec);
   KINDR_ASSERT_DOUBLE_MX_EQ(this->rotEulerAnglesZyxIdentity.toImplementation(), rotExpMap.toImplementation(), Scalar(1e-4), "maps");
 
 }

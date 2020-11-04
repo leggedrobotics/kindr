@@ -434,7 +434,7 @@ TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionSetters){
 }
 
 // Test Rotation Quaternion comparison (equality)
-TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionComparison){
+TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionEqualityComparison){
   typedef typename TestFixture::RotationQuaternion RotationQuaternion;
   typedef typename TestFixture::Scalar Scalar;
   RotationQuaternion rotQuat;
@@ -444,6 +444,19 @@ TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionComparison){
   ASSERT_EQ(rotQuat==this->rotQuat1,true);
   ASSERT_EQ(rotQuat==this->rotQuat2,false);
 }
+
+// Test Rotation Quaternion comparison (inequality)
+TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionInequalityComparison){
+  typedef typename TestFixture::RotationQuaternion RotationQuaternion;
+  typedef typename TestFixture::Scalar Scalar;
+  RotationQuaternion rotQuat;
+
+  // Check inequality comparison
+  rotQuat = this->rotQuat1;
+  ASSERT_EQ(rotQuat!=this->rotQuat1,false);
+  ASSERT_EQ(rotQuat!=this->rotQuat2,true);
+}
+
 
 // Test Rotation Quaternion isNear
 TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionIsNear){
@@ -813,7 +826,6 @@ TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionExponentialMap){
   typedef typename TestFixture::RotationQuaternion RotationQuaternion;
   typedef typename TestFixture::Scalar Scalar;
   typedef typename TestFixture::Vector Vector;
-  RotationQuaternion rotQuat;
   Vector testVec;
 
   testVec = this->rotQuatIdentity.logarithmicMap();
@@ -822,11 +834,11 @@ TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionExponentialMap){
   ASSERT_NEAR(testVec(2), 0.0,1e-6);
 
   testVec = this->rotQuat1.logarithmicMap();
-  RotationQuaternion rotQuatToExpMap = rotQuat.exponentialMap(testVec);
+  RotationQuaternion rotQuatToExpMap = RotationQuaternion::exponentialMap(testVec);
   ASSERT_EQ(rotQuatToExpMap.isNear(this->rotQuat1,1e-6),true);
 
   testVec = this->rotQuat2.logarithmicMap();
-  rotQuatToExpMap = rotQuat.exponentialMap(testVec);
+  rotQuatToExpMap = RotationQuaternion::exponentialMap(testVec);
   ASSERT_EQ(rotQuatToExpMap.isNear(this->rotQuat2,1e-6),true);
 
   double norm = 0.1;
@@ -834,11 +846,11 @@ TYPED_TEST(RotationQuaternionSingleTest, testRotationQuaternionExponentialMap){
   // -------- Testing for casting between different type of rotations and rotation Quaternions --------- //
   // --------------------------------------------------------------------------------------------------- //
   testVec = this->vec/this->vec.norm()*norm;
-  rotQuatToExpMap = rotQuat.exponentialMap(testVec);
+  rotQuatToExpMap = RotationQuaternion::exponentialMap(testVec);
   ASSERT_NEAR(rotQuatToExpMap.getDisparityAngle(this->rotQuatIdentity),norm,1e-6);
 
   testVec.setZero();
-  rotQuatToExpMap = rotQuat.exponentialMap(testVec);
+  rotQuatToExpMap = RotationQuaternion::exponentialMap(testVec);
   ASSERT_NEAR(rotQuatToExpMap.w(), this->rotQuatIdentity.w(),1e-6);
   ASSERT_NEAR(rotQuatToExpMap.x(), this->rotQuatIdentity.x(),1e-6);
   ASSERT_NEAR(rotQuatToExpMap.y(), this->rotQuatIdentity.y(),1e-6);
@@ -938,7 +950,7 @@ TYPED_TEST(RotationQuaternionSingleTest, testGetRandom){
   rotA.setRandom();
   RotationQuaternion rotB = rotA;
   RotationQuaternion rotC;
-  rotC = rotA.getRandom();
+  rotC = RotationQuaternion::getRandom();
 
   ASSERT_TRUE(rotB.isNear(rotA, 1e-4));
   ASSERT_TRUE(!rotC.isNear(rotA, 1e-4));
